@@ -2,7 +2,7 @@
 from flask import Flask,request,jsonify
 from datetime import datetime
 import pymysql
-import mysql.connector
+# import mysql.connector
 
 # Fungsi untuk koneksi ke database
 
@@ -18,10 +18,8 @@ try:
         password = 'ITsurabaya@020',
         database = 'router_monitoring'
     )
-except mysql.connector.Error as err:
-    print (f"terjadi kesalahan operasi database : {err}")
-except mysql.connector.OperationalError as err:
-    print (f"terjadi kesalahan koneksi : {err}")
+except pymysql.MySQLError:
+    print ("Tidak dapat terhubung ke database MySQL")
 except Exception as e:
     print (f"kesalahan umum : {e}")
 # finally:
@@ -41,12 +39,8 @@ try:
             cursor.execute(sql,(router_id,timestamp,status))
             connection.commit()
             print(f"Data log status router {router_id} disimpan ke database")
-except mysql.connector.ProgrammingError as err:
+except pymysql.MySQLError as err:
     print (f"terjadi kesalahan sintaks : {err}")
-except mysql.connector.Error as err:
-    print (f"terjadi kesalahan operasi database : {err}")
-except mysql.connector.OperationalError as err:
-    print (f"terjadi kesalahan koneksi : {err}")
 
 #Membuat route GET all data
 @app.route('/route-data', methods=['GET'])
