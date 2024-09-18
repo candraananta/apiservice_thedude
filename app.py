@@ -11,20 +11,24 @@ import pymysql
 app = Flask(__name__)
 
 # KONFIGURASI DB MYSQL 
+
+# connection = None
 try:
     connection = pymysql.connect(
-        host = '192.168.0.8', #alamat server database
+        host = 'localhost', #alamat server database
         user = 'root',
-        password = 'ITsurabaya@020',
+        password = 'ITsurabaya@)20',
         database = 'router_monitoring'
     )
-except pymysql.MySQLError:
-    print ("Tidak dapat terhubung ke database MySQL")
+except pymysql.MySQLError as e:
+    print ("Tidak dapat terhubung ke database MySQL" + str(e))
 except Exception as e:
     print (f"kesalahan umum : {e}")
-# finally:
-#     if connection:
-#         print("Berhasil terhubung ke database MySQL")
+finally:
+    if connection:
+        print("Berhasil terhubung ke database MySQL")
+    else:
+        print("Gagal terhubung ke database MySQL")
 
 # FUNGSI UNTUK MENCATAT STATUS KE DATABASE MYSQL
 try:
