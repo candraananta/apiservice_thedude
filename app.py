@@ -50,11 +50,29 @@ except pymysql.MySQLError as err:
 @app.route('/route-data', methods=['GET'])
 
 def get_router_data():
-    with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-        sql = 'select * from router_log'
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        return jsonify(result),200
+    #membuat router id agar menjadi parameter tambahan saat akan mensortir data by router id
+    router_id = request.args.get('router_id')
+
+    #Membuka koneksi dengan cursor
+    with connection.cursor() as cursor:
+        #jika router id di isi, maka ?
+        if router_id :
+            sql = f"select * from router_log where router_id = {router_id} order by timestamp desc"
+            cursor.execute(sql)
+            print(f"data router_id = {router_id} berhasil ditampilkan")
+        else :
+            sql = f"select * from router_log"
+            cursor.execute(sql)
+            print(f"berhasil menampilkan semua data")
+        #menampung hasil query
+        result_log = cursor.fetchall()
+        return jsonify(result_log),200
+
+    # with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+    #     sql = 'select * from router_log'
+    #     cursor.execute(sql)
+    #     result = cursor.fetchall()
+    #     return jsonify(result),200
     
 #Mebuat route post data POST
 @app.route('/route-status', methods=['POST'])
