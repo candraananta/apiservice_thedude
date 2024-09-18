@@ -54,14 +54,14 @@ def get_router_data():
     router_id = request.args.get('router_id')
 
     #Membuka koneksi dengan cursor
-    with connection.cursor() as cursor:
+    with connection.cursor(pymysql.cursors.DictCursor) as cursor:
         #jika router id di isi, maka ?
         if router_id :
             sql = f"select * from router_log where router_id = {router_id} order by timestamp desc"
             cursor.execute(sql)
             print(f"data router_id = {router_id} berhasil ditampilkan")
         else :
-            sql = f"select * from router_log"
+            sql = f"select rm.router_name, rl.timestamp,rl.status from router_log rl JOIN router_master rm ON rl.router_id = rm.router_id order by timestamp desc"
             cursor.execute(sql)
             print(f"berhasil menampilkan semua data")
         #menampung hasil query
